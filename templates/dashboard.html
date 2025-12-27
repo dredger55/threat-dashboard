@@ -1,0 +1,104 @@
+k{% extends "base.html" %}
+
+{% block content %}
+    <!-- Motion Card - static -->
+    <div class="card"
+         hx-get="/motion-status"
+         hx-trigger="load, every 30s"
+         hx-swap="outerHTML">
+        <h2>Front Door Camera (Motion Detection)</h2>
+        <div class="card-content">
+            <p>Loading motion data...</p>
+        </div>
+    </div>
+
+    <!-- Traffic Card - scrolling -->
+    <div class="card"
+         hx-get="/traffic-status"
+         hx-trigger="load, every 120s"
+         hx-swap="outerHTML">
+        <h2>Traffic Incidents</h2>
+        <div class="card-content">
+            <div class="vertical-marquee">
+                <div class="vertical-marquee-content">
+                    <p>Loading traffic data...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weather Card - scrolling -->
+    <div class="card"
+         hx-get="/weather-status"
+         hx-trigger="load, every 300s"
+         hx-swap="outerHTML">
+        <h2>Weather</h2>
+        <div class="card-content">
+            <div class="vertical-marquee">
+                <div class="vertical-marquee-content">
+                    <p>Loading weather data...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earthquake Card - scrolling -->
+    <div class="card"
+         hx-get="/earthquake-status"
+         hx-trigger="load, every 300s"
+         hx-swap="outerHTML">
+        <h2>Earthquakes & Tsunami</h2>
+        <div class="card-content">
+            <div class="vertical-marquee">
+                <div class="vertical-marquee-content">
+                    <p>Loading earthquake data...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Crime Card - scrolling -->
+    <div class="card"
+         hx-get="/crime-status"
+         hx-trigger="load, every 600s"
+         hx-swap="outerHTML">
+        <h2>Local Crime (within 5 miles)</h2>
+        <div class="card-content">
+            <div class="vertical-marquee">
+                <div class="vertical-marquee-content">
+                    <p>Loading crime data...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hazard Card - scrolling -->
+    <div class="card"
+         hx-get="/hazard-status"
+         hx-trigger="load, every 600s"
+         hx-swap="outerHTML">
+        <h2>Hazard Alerts (Puget Sound Region)</h2>
+        <div class="card-content">
+            <div class="vertical-marquee">
+                <div class="vertical-marquee-content">
+                    <p>Loading hazard data...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Geopolitical Card - scrolling -->
+    <div class="card"
+         hx-get="/geopolitical-status"
+         hx-trigger="load, every 900s"
+         hx-swap="outerHTML">
+        <h2>Geopolitical (US Northwest)</h2>
+        <div class="card-content">
+            <div class="vertical-marquee">
+                <div class="vertical-marquee-content">
+                    <p>Loading geopolitical data...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

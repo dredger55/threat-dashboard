@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Threat Assessment Dashboard{% endblock %}</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Threat Level Header - fixed to always have a swap target -->
+    <div id="threat-header"
+         hx-get="/threat-level"
+         hx-trigger="load, every 30s"
+         hx-swap="innerHTML"
+         hx-indicator="#threat-loading">
+        <div style="text-align:center; padding:1rem; background:#1a1a2e; border-bottom:3px solid #00ffea;">
+            <h1 class="threat-level" style="color:#00ffea; font-size:3rem; margin:0;">
+                THREAT LEVEL: <span id="level-text">INITIALIZING...</span>
+            </h1>
+            <p style="color:#aaa; margin:0.5rem 0;">Connecting to threat assessment system...</p>
+            <p id="threat-reasons" style="color:#aaa;">Please wait</p>
+        </div>
+    </div>
+    <div id="threat-loading" class="htmx-indicator" style="text-align:center; color:#00ffea; padding:0.5rem;">
+        Updating threat level...
+    </div>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- JavaScript for fixed-speed vertical scroll + DEBUG TEST MARKER -->
+    <script>
+        const SCROLL_SPEED = 50; // very slow for testing — change back to 30 later
+        const TEST_MARKER = true; // set to false later to remove marker
+
+        function initScroll() {
+            console.log("initScroll called");
+            const marquees = document.querySelectorAll('.vertical-marquee');
+            console.log(`Found ${marquees.length} .vertical-marquee elements`);
+
+            marquees.forEach((marquee, index) => {
+                console.log(`Processing marquee ${index}`);
+                const content = marquee.querySelector('.vertical-marquee-content');
+                if (!content) {
+                    console.log(`Marquee ${index}: no .vertical-marquee-content found`);
+                    return;
+                }
+
+                console.log(`Marquee ${index}: content height = ${content.offsetHeight}px`);
+
+                // Remove old duplicate
+                const oldDuplicate = marquee.querySelector('.duplicate');
+                if (oldDuplicate) {
+                    oldDuplicate.remove();
+                    console.log(`Marquee ${index}: removed old duplicate`);
+                }
+
+                const contentHeight = content.offsetHeight;
+                const containerHeight = marquee.offsetHeight;
+
+                console.log(`Marquee ${index}: container height = ${containerHeight}px`);
+
+                if (contentHeight > containerHeight) {
+                    const duplicate = content.cloneNode(true);
+                    duplicate.classList.add('duplicate');
+                    marquee.appendChild(duplicate);
+                    console.log(`Marquee ${index}: added duplicate`);
+
+                    // TEST MARKER
+ if (TEST_MARKER) {
+                        const marker = document.createElement('p');
+                        marker.textContent = '<<< SCROLL TEST MARKER - IF YOU S>
+                        marker.style.color = 'red';
+                        marker.style.fontWeight = 'bold';
+                        marker.style.fontSize = '1.2em';
+                        marker.style.marginTop = '2rem';
+                        duplicate.appendChild(marker);
+                        console.log(`Marquee ${index}: added red test marker`);
+                    }                    if (TEST_MARKER) {
+                        const marker = document.createElement('p');
+                        marker.textContent = '<<< SCROLL TEST MARKER - IF YOU SEE THIS MOVING, SCROLL IS WORKING >>>';
+                        marker.style.color = 'red';
+                        marker.style.fontWeight = 'bold';
+                        marker.style.fontSize = '1.2em';
+                        marker.style.marginTop = '2rem';
+                        duplicate.appendChild(marker);
+                        console.log(`Marquee ${index}: added red test marker`);
+                    }
+
+                    const scrollDistance = contentHeight;
+                    const duration = scrollDistance / SCROLL_SPEED;
+
+                    marquee.style.animationDuration = `${duration}s`;
+                    marquee.classList.add('scrolling');
+                    console.log(`Marquee ${index}: set duration ${duration.toFixed(2)}s and added .scrolling class`);
+                } else {
+                    marquee.classList.remove('scrolling');
+                    console.log(`Marquee ${index}: content fits, no scrolling needed`);
+                }
+            });
+        }
+
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOMContentLoaded - running initScroll");
+            initScroll();
+        });
+
+        // Run after every HTMX swap
+        document.body.addEventListener('htmx:afterSwap', (event) => {
+            console.log("htmx:afterSwap - running initScroll");
+            initScroll();
+        });
+    </script>
+</body>
+</html>

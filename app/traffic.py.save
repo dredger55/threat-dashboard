@@ -1,0 +1,39 @@
+import os
+import httpx
+from dotenv import load_dotenv
+from datetime import datetime
+import pytz
+
+load_dotenv()
+
+ACCESS_CODE = os.getenv("WSDOT_ACCESS_CODE")
+BASE_URL = "https://wsdot.wa.gov/Traffic/api/HighwayAlerts/HighwayAlertsREST.svc"
+
+PACIFIC_TZ = pytz.timezone("America/Los_Angeles")
+
+# Routes we care about
+ROUTES = {
+    "you": {"highway": "002", "name": "US-2 (Everett → Wenatchee)"},
+    "wife": {"highway": "522", "name": "SR-522 (Monroe → Bothell)"}
+}
+
+async def get_traffic_data():
+    url = f"{BASE_URL}/GetAlertsAsJson?AccessCode={ACCESS_CODE}"
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(url, timeout=10.0)
+            response.raise_for_status()
+            alerts = response.json()
+        except Exception as e:
+            print(f"WSDOT API error: {e}")
+            return {"error": "Failed to fetch traffic data"}
+
+    your_incidents = []
+    wife_incidents = []
+    major_incident = False
+
+    for alert in alerts:
+        # Filter alerts that affect our highways
+        if ROUTES["you"]["highway"] in alert.get("AffectedHighways", ""):
+            your_incidents.append(alert)
+            if alert.get("EventCategory") in ["Accident", "Closure"] or "blocking" in alert.get("HeadlineDesc
